@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  database:
+    image: "dbz-portal-service-db"
+    volumes:
+      - "dbz-portal-database-volume:/var/lib/postgresql/data"
+    network_mode: host
+
+  character_service:
+    image: "dbz-portal-service"
+    network_mode: host
+    depends_on:
+      - database
+
+volumes:
+  dbz-character-database-volume:
+    external: true
+
