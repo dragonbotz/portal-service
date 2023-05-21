@@ -33,7 +33,6 @@ ENV PATH="/usr/lib/postgresql/15/bin:${PATH}"
 # Setup
 WORKDIR /database
 COPY init_database.sql .
-COPY init_database.sh .
 
 # Changes the user to postgres
 USER postgres
