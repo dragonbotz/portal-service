@@ -5,6 +5,8 @@
 //!
 //! Authors: Lahcène Belhadi <lahcene.belhadi@gmail.com>
 
+mod core;
+
 use actix_web::{web, HttpServer, App};
 
 #[actix_web::main]

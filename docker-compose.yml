@@ -4,17 +4,14 @@ services:
     image: "dbz-portal-service-db"
     volumes:
       - "dbz-portal-database-volume:/var/lib/postgresql/data"
-    network_mode: host
     ports:
-      - "5433:5432"
+      - "5433:5433"
 
   portal_service:
     image: "dbz-portal-service"
-    network_mode: host
     depends_on:
       - database
 
 volumes:
   dbz-portal-database-volume:
-    external: true
 

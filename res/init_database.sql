@@ -14,7 +14,7 @@
  -- * portal_current
 CREATE DATABASE portaldb;
 
--- Go to characterdb
+-- Go to portal
 \c portaldb
 
 CREATE TABLE IF NOT EXISTS portal (

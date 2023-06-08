@@ -4,7 +4,20 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Lahcène Belhadi <lahcene.belhadi@gmail.com>"]
 
+[dependencies.dbzlib-rs]
+path = "dbzlib-rs"
+
 # HTTP
 # https://crates.io/crates/actix-web
 [dependencies.actix-web]
 version = "4.3"
+
+# SQL
+# https://crates.io/crates/sqlx
+[dependencies.sqlx]
+version = "0.6.3"
+
+# Serde
+# https://crates.io/crates/serde
+[dependencies.serde]
+version = "1.0"
