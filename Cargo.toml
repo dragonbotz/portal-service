@@ -21,3 +21,8 @@ version = "0.6.3"
 # https://crates.io/crates/serde
 [dependencies.serde]
 version = "1.0"
+
+# Tokio
+# https://crates.io/crates/tokio
+[dependencies.tokio]
+version = "1.29"
