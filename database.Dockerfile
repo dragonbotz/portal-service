@@ -42,15 +42,15 @@ RUN mkdir -p /var/lib/postgresql/data/
 RUN initdb -D /var/lib/postgresql/data
 
 # Copies config
-COPY pg_hba.conf /var/lib/postgresql/data
-COPY postgresql.conf /var/lib/postgresql/data
+COPY pg_hba.conf /var/lib/postgresql/15/main
+COPY postgresql.conf /var/lib/postgresql/15/main
 
 USER root
 
-RUN chmod 777 /var/lib/postgresql/data/pg_hba.conf
-RUN chmod 777 /var/lib/postgresql/data/postgresql.conf
+RUN chmod 777 /var/lib/postgresql/15/main/pg_hba.conf
+RUN chmod 777 /var/lib/postgresql/15/main/postgresql.conf
 
 USER postgres
 
 # Starts the database
-CMD ["postgres", "-D", "/var/lib/postgresql/data"]
+CMD ["postgres", "-D", "/var/lib/postgresql/15/main"]
