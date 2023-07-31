@@ -24,3 +24,5 @@ sudo docker build \
 cd ..
 
 rm -r .tmp
+
+sudo docker volume create dbz-portal-database-volume
