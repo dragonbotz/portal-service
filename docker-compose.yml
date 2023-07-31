@@ -3,7 +3,7 @@ services:
   database:
     image: "dbz-portal-service-db"
     volumes:
-      - "dbz-portal-database-volume:/var/lib/postgresql/data"
+      - "dbz-portal-database-volume:/var/lib/postgresql/15/main"
     ports:
       - "5433:5433"
 
@@ -14,4 +14,4 @@ services:
 
 volumes:
   dbz-portal-database-volume:
-
+    external: true
