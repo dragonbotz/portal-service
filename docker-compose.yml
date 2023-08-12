@@ -1,16 +1,33 @@
-version: "3.9"
+version: '3.9'
 services:
   database:
-    image: "dbz-portal-service-db"
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: /run/secrets/postgres_password
     volumes:
-      - "dbz-portal-database-volume:/var/lib/postgresql/15/main"
-    ports:
-      - "5433:5433"
+      - dbz-portal-database-volume:/var/lib/postgresql/data 
+    secrets:
+      - postgres_password
 
   portal_service:
-    image: "dbz-portal-service"
+    image: dbz-portal-service
     depends_on:
       - database
+    environment:
+      PG_USER: /run/secrets/pg_user
+      PG_PASSWORD: /run/secrets/pg_password
+    secrets:
+      - pg_user
+      - pg_password
+
+secrets:
+  pg_user:
+    file: pg_user.secret
+  pg_password:
+    file: pg_password.secret
+  postgres_password:
+    file: postgres_password.secret
 
 volumes:
   dbz-portal-database-volume:
