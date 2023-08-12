@@ -11,18 +11,4 @@ sudo docker build \
 	--no-cache \
 	.
 
-mkdir .tmp
-
-cp res/init_database.sql .tmp
-cp res/*.conf .tmp
-
-cd .tmp
-sudo docker build \
-	-f ../database.Dockerfile \
-	-t dbz-portal-service-db \
-	.
-cd ..
-
-rm -r .tmp
-
 sudo docker volume create dbz-portal-database-volume
