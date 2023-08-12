@@ -16,21 +16,26 @@ use dbzlib_rs::util::error::Error;
 async fn main() {
     println!("Running server on: http://127.0.0.1:8081/");
 
+    // retrieve database user
+    let mut pg_user = String::new();
+    if let Ok(pg_user_path) = std::env::var("PG_USER") {
+        if let Ok(user) = std::fs::read_to_string(pg_user_path) {
+            pg_user = user;
+        }
+    }
+
+    let mut pg_password = String::new();
+    if let Ok(pg_password_path) = std::env::var("PG_PASSWORD") {
+        if let Ok(password) = std::fs::read_to_string(pg_password_path) {
+            pg_password = password;
+        }
+    }
+    
     // connect the databse
-    let database = PgDatabase::new("postgresql://postgres@database:5433/portaldb").await;
+    let database = PgDatabase::new(format!("postgresql://{pg_user}:{pg_password}@database:5433/portaldb").as_str()).await;
 
     if let Err(error) = database {
         panic!("{}", Error::DatabaseConnection(error.to_string()))
-    }
-
-    let database = database.unwrap();
-    let repository = PortalRepository::new(&database);
-    let portal_result = repository.get(1).await;
-
-    if portal_result.is_err() {
-        panic!("No portal found, or there might be an error");
-    } else if portal_result.is_ok() {
-        println!("A portal has been found");
     }
 
     // Setup server
