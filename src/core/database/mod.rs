@@ -8,7 +8,7 @@ use dbzlib_rs::{
     util::exception::{ExcResult, Exception},
 };
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use sqlx::{FromRow, Row};
 
 #[derive(Serialize, Deserialize, FromRow)]
 pub struct PortalData {
@@ -37,11 +37,11 @@ impl<'a> PortalRepository<'a> {
         Self { database }
     }
 
-    /// Retrieves a portal and returns it
+    /// Retrieves a portal data and returns it
     ///
     /// # Arguments:
     /// * id - the portal's id
-    pub async fn get(&self, id: i64) -> ExcResult<PortalData> {
+    pub async fn get_data(&self, id: i64) -> ExcResult<PortalData> {
         let result = sqlx::query_as::<_, PortalData>("SELECT * FROM portal WHERE id = $1")
             .bind(id)
             .fetch_one(self.database.pool())
@@ -52,6 +52,35 @@ impl<'a> PortalRepository<'a> {
         }
 
         Ok(result.unwrap())
+    }
+
+    /// Retrieves a raw portal content and returns it
+    ///
+    /// # Arguments:
+    /// * id - the portal's id to fetch content from
+    pub async fn get_content(&self, id: i64) -> ExcResult<Vec<i64>> {
+        let characters = sqlx::query("SELECT character FROM portal_content WHERE portal = $1")
+            .bind(id)
+            .fetch_all(self.database.pool())
+            .await;
+
+        if let Err(error) = characters {
+            return Err(Exception::RetrievePortalContent(error.to_string()));
+        }
+        let characters = characters.unwrap();
+
+        if characters.len() == 0 {
+            return Err(Exception::RetrievePortalContent(format!(
+                "No character found for Portal #{id}"
+            )));
+        }
+
+        let mut character_vec = Vec::<i64>::new();
+        for row in characters {
+            character_vec.push(row.get(0))
+        }
+
+        Ok(character_vec)
     }
 }
 
@@ -70,7 +99,7 @@ mod portal_test {
     }
 
     fn init_repository(database: &PgDatabase) -> PortalRepository {
-        PortalRepository { database: database }
+        PortalRepository { database }
     }
 
     #[tokio::test]
@@ -78,6 +107,6 @@ mod portal_test {
         let database = init_database().await;
         let repository = init_repository(&database);
 
-        assert!(repository.get(-255).await.is_ok())
+        assert!(repository.get_data(-255).await.is_ok())
     }
 }
