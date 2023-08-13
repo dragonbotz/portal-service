@@ -7,8 +7,9 @@
 
 mod core;
 
-use actix_web::{web, App, HttpServer};
+use crate::core::api::route;
 use crate::core::database::PortalRepository;
+use actix_web::{web, App, HttpServer};
 use dbzlib_rs::database::PgDatabase;
 use dbzlib_rs::util::error::Error;
 
@@ -30,17 +31,24 @@ async fn main() {
             pg_password = password;
         }
     }
-    
+
     // connect the databse
-    let database = PgDatabase::new(format!("postgresql://{pg_user}:{pg_password}@database:5433/portaldb").as_str()).await;
+    let database = PgDatabase::new(
+        format!("postgresql://{pg_user}:{pg_password}@database:5433/portaldb").as_str(),
+    )
+    .await;
 
     if let Err(error) = database {
         panic!("{}", Error::DatabaseConnection(error.to_string()))
     }
 
     // Setup server
-    let server = HttpServer::new(move || App::new().app_data(web::Data::new(database.clone())))
-        .bind(("127.0.0.1", 8081));
+    let server = HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(database.clone()))
+            .service(route::root)
+    })
+    .bind(("0.0.0.0", 8081));
 
     if let Err(error) = server {
         panic!("An error occured while binding server to ip adress and port: {error}")
