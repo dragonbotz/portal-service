@@ -8,14 +8,14 @@
 mod core;
 
 use crate::core::api::route;
-use crate::core::database::PortalRepository;
 use actix_web::{web, App, HttpServer};
 use dbzlib_rs::database::PgDatabase;
 use dbzlib_rs::util::error::Error;
 
 #[actix_web::main]
 async fn main() {
-    println!("Running server on: http://127.0.0.1:8081/");
+    std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
 
     // retrieve database user
     let mut pg_user = String::new();
@@ -42,11 +42,15 @@ async fn main() {
         panic!("{}", Error::DatabaseConnection(error.to_string()))
     }
 
+    let database = database.unwrap();
+
     // Setup server
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(database.clone()))
             .service(route::root)
+            .service(route::get_data)
+            .service(route::get_content)
     })
     .bind(("0.0.0.0", 8081));
 
