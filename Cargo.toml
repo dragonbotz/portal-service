@@ -4,6 +4,17 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Lahcène Belhadi <lahcene.belhadi@gmail.com>"]
 
+# Logging
+# https://crates.io/crates/log
+# Note: Works with env_logger
+[dependencies.log]
+version = "0.4.20"
+
+# Logging
+# https://crates.io/crates/env_logger
+[dependencies.env_logger]
+version = "0.10.0"
+
 [dependencies.dbzlib-rs]
 path = "dbzlib-rs"
 
