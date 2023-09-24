@@ -24,7 +24,7 @@ async fn main() {
 
     // connect the databse
     let database = PgDatabase::new(
-        format!("postgresql://postgres:{pg_password}@database:5433/portaldb").as_str(),
+        format!("postgresql://postgres:{pg_password}@dbz-portal-database:5433/portaldb").as_str(),
     )
     .await;
 
