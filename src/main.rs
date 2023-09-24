@@ -26,7 +26,7 @@ async fn main() {
     }
 
     let mut pg_password = String::new();
-    if let Ok(pg_password_path) = std::env::var("PG_PASSWORD") {
+    if let Ok(pg_password_path) = std::env::var("DBZ_PG_SUPERUSER_PASS") {
         if let Ok(password) = std::fs::read_to_string(pg_password_path) {
             pg_password = password;
         }
@@ -34,7 +34,7 @@ async fn main() {
 
     // connect the databse
     let database = PgDatabase::new(
-        format!("postgresql://{pg_user}:{pg_password}@database:5433/portaldb").as_str(),
+        format!("postgresql://postgres:{pg_password}@database:5433/portaldb").as_str(),
     )
     .await;
 
