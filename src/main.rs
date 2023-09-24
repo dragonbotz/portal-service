@@ -18,8 +18,8 @@ async fn main() {
     env_logger::init();
 
     let mut pg_password = String::new();
-    if let Ok(pg_password_path) = std::env::var("DBZ_PG_SUPERUSER_PASS") {
-        pg_password = password;
+    if let Ok(pass) = std::env::var("DBZ_PG_SUPERUSER_PASS") {
+        pg_password = pass;
     }
 
     // connect the databse
