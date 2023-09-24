@@ -17,19 +17,9 @@ async fn main() {
     std::env::set_var("RUST_LOG", "debug");
     env_logger::init();
 
-    // retrieve database user
-    let mut pg_user = String::new();
-    if let Ok(pg_user_path) = std::env::var("PG_USER") {
-        if let Ok(user) = std::fs::read_to_string(pg_user_path) {
-            pg_user = user;
-        }
-    }
-
     let mut pg_password = String::new();
     if let Ok(pg_password_path) = std::env::var("DBZ_PG_SUPERUSER_PASS") {
-        if let Ok(password) = std::fs::read_to_string(pg_password_path) {
-            pg_password = password;
-        }
+        pg_password = password;
     }
 
     // connect the databse
