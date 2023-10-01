@@ -17,24 +17,14 @@ async fn main() {
     std::env::set_var("RUST_LOG", "debug");
     env_logger::init();
 
-    // retrieve database user
-    let mut pg_user = String::new();
-    if let Ok(pg_user_path) = std::env::var("PG_USER") {
-        if let Ok(user) = std::fs::read_to_string(pg_user_path) {
-            pg_user = user;
-        }
-    }
-
     let mut pg_password = String::new();
-    if let Ok(pg_password_path) = std::env::var("PG_PASSWORD") {
-        if let Ok(password) = std::fs::read_to_string(pg_password_path) {
-            pg_password = password;
-        }
+    if let Ok(pass) = std::env::var("DBZ_PG_SUPERUSER_PASS") {
+        pg_password = pass;
     }
 
     // connect the databse
     let database = PgDatabase::new(
-        format!("postgresql://{pg_user}:{pg_password}@database:5433/portaldb").as_str(),
+        format!("postgresql://postgres:{pg_password}@dbz-portal-database:5433/portaldb").as_str(),
     )
     .await;
 
@@ -52,7 +42,7 @@ async fn main() {
             .service(route::get_data)
             .service(route::get_content)
     })
-    .bind(("0.0.0.0", 8081));
+    .bind(("0.0.0.0", 8080));
 
     if let Err(error) = server {
         panic!("An error occured while binding server to ip adress and port: {error}")
