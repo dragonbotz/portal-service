@@ -42,7 +42,7 @@ async fn main() {
             .service(route::get_data)
             .service(route::get_content)
     })
-    .bind(("0.0.0.0", 8081));
+    .bind(("0.0.0.0", 8080));
 
     if let Err(error) = server {
         panic!("An error occured while binding server to ip adress and port: {error}")
