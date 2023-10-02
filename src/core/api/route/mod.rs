@@ -36,11 +36,11 @@ async fn get_content(database: web::Data<PgDatabase>, id: web::Path<i64>) -> imp
     let repository = PortalRepository::new(&database);
     let id = id.into_inner();
 
-    let characters = repository.get_content(id).await;
-    if let Err(error) = characters {
-        return HttpResponse::NotFound().body(error.to_string());
+    let content = repository.get_content(id).await;
+    if let Err(error) = content {
+        return HttpResponse::InternalServerError().body(error.to_string());
     }
-    let characters = characters.unwrap();
+    let content = content.unwrap();
 
-    HttpResponse::Ok().json(characters)
+    HttpResponse::Ok().json(content)
 }
