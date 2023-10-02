@@ -6,23 +6,10 @@
 use dbzlib_rs::{
     database::PgDatabase,
     util::exception::{ExcResult, Exception},
+    model::portal::{PortalContent, PortalData},
 };
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, Row};
-
-#[derive(Serialize, Deserialize, FromRow)]
-pub struct PortalData {
-    id: Option<i64>,
-    name: String,
-    description: String,
-    image_url: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct PortalContent {
-    portal: i64,
-    characters: Vec<i64>,
-}
+use sqlx::Row;
+use log::error;
 
 pub struct PortalRepository<'a> {
     database: &'a PgDatabase,
@@ -58,29 +45,25 @@ impl<'a> PortalRepository<'a> {
     ///
     /// # Arguments:
     /// * id - the portal's id to fetch content from
-    pub async fn get_content(&self, id: i64) -> ExcResult<Vec<i64>> {
+    pub async fn get_content(&self, id: i64) -> ExcResult<PortalContent> {
         let characters = sqlx::query("SELECT character FROM portal_content WHERE portal = $1")
             .bind(id)
             .fetch_all(self.database.pool())
             .await;
 
         if let Err(error) = characters {
+            error!("{}", error);
             return Err(Exception::RetrievePortalContent(error.to_string()));
         }
         let characters = characters.unwrap();
-
-        if characters.len() == 0 {
-            return Err(Exception::RetrievePortalContent(format!(
-                "No character found for Portal #{id}"
-            )));
-        }
 
         let mut character_vec = Vec::<i64>::new();
         for row in characters {
             character_vec.push(row.get(0))
         }
 
-        Ok(character_vec)
+        let portal_content = PortalContent::new(id, character_vec);
+        Ok(portal_content)
     }
 }
 
